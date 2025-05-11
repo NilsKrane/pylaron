@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pylaron"
+version = "1.0.0"
+authors = [
+  { name="Nils Krane", email="nils.krane@empa.ch" },
+]
+description = "Small python package for simulation of Franck-Condon spectra using polaron-theory"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "numpy"
+]
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE.txt"]
