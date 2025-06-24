@@ -1,6 +1,6 @@
 import numpy as np
 
-def spectrum(J: np.ndarray, dE: float, range: float, E0=0., lor=0., gauss=0., Vmod=0.) -> (np.ndarray, np.ndarray):
+def spectrum(J: np.ndarray, dE: float, range: float, E0=0., lor=0., gauss=0., Vmod=0., dQ=0) -> tuple[np.ndarray, np.ndarray]:
     ''' Calculate Franck-Condon spectrum for givin phonon density `J`. All input energies are considered in eV
     :param J:       1d-array of phonon density. Must start at zero energy and have energy resolution dE.
     :param dE:      Energy resolution
@@ -9,6 +9,7 @@ def spectrum(J: np.ndarray, dE: float, range: float, E0=0., lor=0., gauss=0., Vm
     :param lor:     HWHM of lorentzian broadening
     :param gauss:   HWHM of gaussian broadening
     :param Vmod:    Amplitude of Lock-in modulation
+    :param dQ:      Change of charge state to determine energy direction of phonon progression. If `0` (default) sign of `E0` is used.
 
     :return: spectrum_x, spectrum_y
     '''
@@ -22,10 +23,16 @@ def spectrum(J: np.ndarray, dE: float, range: float, E0=0., lor=0., gauss=0., Vm
     # x values in time-domain
     ft = np.fft.fftfreq(npnts,d=dE/(2*np.pi*hbar))
 
-    # transform J to time-domain
-    if E0 >= 0:
+    # define "high energy side" of spectrum
+    if dQ == 0:
+        direction = np.sign(E0)
+    else:
+        direction = np.sign(-dQ)
+
+    # transform J to time.-domain
+    if direction >= 0:
         fy = np.fft.ifft(J*dE, n=npnts, norm='forward')
-    elif E0 < 0:
+    else:
         fy = np.fft.fft(J*dE, n=npnts, norm='backward')
     corrfunc = np.exp(1j*E0/hbar*ft+fy) # "convolution" in time-domain
 
